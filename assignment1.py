@@ -57,6 +57,14 @@ def mon_max(month: int, year: int) -> int:
     # Return 29 for February in leap years, 28 otherwise
     return 29 if leap_year(year) else 28
 
+def day_of_week(year: int, month: int, day: int) -> str:
+    """
+    Determines the day of the week for a given date.
+    ...
+    """
+    date = datetime(year, month, day)
+    return date.strftime('%a').lower()
+
 def after(date: str) -> str:
     """
     Calculates the next day's date given a date in 'YYYY-MM-DD' format.
@@ -87,10 +95,17 @@ def valid_date(date: str) -> bool:
     Returns:
     bool: True if the date is valid, False otherwise.
     """
+    parts = date.split('-')
+    if len(parts) != 3:
+        return False
+
     try:
-        year, month, day = map(int, date.split('-'))
-        # Validate month and day range
-        return 1 <= month <= 12 and 1 <= day <= mon_max(month, year)
+        year, month, day = map(int, parts)
+        if len(parts[0]) != 4 or not (1 <= month <= 12):  # Ensure year is four digits and month is valid
+            return False
+        if not (1 <= day <= mon_max(month, year)):  # Validate day based on month and leap year
+            return False
+        return True
     except ValueError:
         return False
 
